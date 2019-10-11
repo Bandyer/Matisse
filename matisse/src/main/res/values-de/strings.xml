@@ -15,8 +15,8 @@
     <string name="album_name_all">Alle Medien</string>
 
     <string name="button_preview">Vorschau</string>
-    <string name="button_apply_default">Auswählen</string>
-    <string name="button_apply">Auswählen(%1$d)</string>
+    <string name="button_confirm_default">Auswählen</string>
+    <string name="button_confirm">Auswählen(%1$d)</string>
     <string name="button_back">Zurück</string>
     <string name="photo_grid_capture">Kamera</string>
     <string name="empty_text">Keine Medien gewählt</string>

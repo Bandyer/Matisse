@@ -20,8 +20,8 @@
     <string name="album_name_all">All Media</string>
 
     <string name="button_preview">Preview</string>
-    <string name="button_apply_default">Apply</string>
-    <string name="button_apply">Apply(%1$d)</string>
+    <string name="button_confirm_default">Confirm</string>
+    <string name="button_confirm">Confirm(%1$d)</string>
     <string name="button_back">Back</string>
     <string name="photo_grid_capture">Camera</string>
     <string name="empty_text">No media yet</string>
@@ -37,6 +37,4 @@
     <string name="error_over_original_size">Can\'t select the images larger than %1$d MB</string>
     <string name="error_over_original_count">%1$d images over %2$d MB. Original will be unchecked</string>
     <string name="button_original">Original</string>
-    <string name="button_sure_default">Sure</string>
-    <string name="button_sure">Sure(%1$d)</string>
 </resources>
