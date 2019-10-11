@@ -50,11 +50,13 @@ dependencies {
 // $ ./gradlew clean build bintrayUpload -PbintrayUser=BINTRAY_USERNAME -PbintrayKey=BINTRAY_KEY -PdryRun=false
 publish {
     userOrg = 'bandyer'
-    groupId = 'com.zhihu.android'
+    groupId = 'com.bandyer'
+    repoName = "General"
     artifactId = 'matisse'
     publishVersion = '0.0.1'
     desc = 'A well-designed local image selector for Android'
     website = 'https://www.zhihu.com/'
+    repository = 'https://github.com/Bandyer/Matisse'
 }
 
 task javadoc(type: Javadoc) {
