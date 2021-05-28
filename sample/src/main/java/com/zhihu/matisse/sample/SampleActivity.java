@@ -32,7 +32,11 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.tbruyelle.rxpermissions2.RxPermissions;
+import com.karumi.dexter.Dexter;
+import com.karumi.dexter.PermissionToken;
+import com.karumi.dexter.listener.PermissionDeniedResponse;
+import com.karumi.dexter.listener.PermissionGrantedResponse;
+import com.karumi.dexter.listener.single.PermissionListener;
 import com.zhihu.matisse.Matisse;
 import com.zhihu.matisse.MimeType;
 import com.zhihu.matisse.engine.impl.PicassoEngine;
@@ -64,16 +68,25 @@ public class SampleActivity extends AppCompatActivity implements View.OnClickLis
     @SuppressLint("CheckResult")
     @Override
     public void onClick(final View v) {
-        RxPermissions rxPermissions = new RxPermissions(this);
-        rxPermissions.request(Manifest.permission.WRITE_EXTERNAL_STORAGE)
-                .subscribe(aBoolean -> {
-                    if (aBoolean) {
+        Dexter.withContext(this)
+                .withPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                .withListener(new PermissionListener() {
+                    @Override
+                    public void onPermissionGranted(PermissionGrantedResponse response) {
                         startAction(v);
-                    } else {
+                    }
+
+                    @Override
+                    public void onPermissionDenied(PermissionDeniedResponse response) {
                         Toast.makeText(SampleActivity.this, R.string.permission_request_denied, Toast.LENGTH_LONG)
                                 .show();
                     }
-                }, Throwable::printStackTrace);
+
+                    @Override
+                    public void onPermissionRationaleShouldBeShown(com.karumi.dexter.listener.PermissionRequest permissionRequest, PermissionToken permissionToken) {
+
+                    }
+                }).check();
     }
     // </editor-fold>
 

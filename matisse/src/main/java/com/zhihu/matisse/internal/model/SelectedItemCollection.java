@@ -172,9 +172,8 @@ public class SelectedItemCollection {
             String cause;
 
             try {
-                cause = mContext.getResources().getQuantityString(
-                        R.plurals.error_over_count,
-                        maxSelectable,
+                cause = mContext.getResources().getString(
+                        R.string.error_over_count,
                         maxSelectable
                 );
             } catch (Resources.NotFoundException e) {
@@ -238,6 +237,8 @@ public class SelectedItemCollection {
     /**
      * Determine whether there will be conflict media types. A user can only select images and videos at the same time
      * while {@link SelectionSpec#mediaTypeExclusive} is set to false.
+     * @param item item to check
+     * @return true if conflict
      */
     public boolean typeConflict(Item item) {
         return SelectionSpec.getInstance().mediaTypeExclusive

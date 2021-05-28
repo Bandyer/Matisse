@@ -45,18 +45,24 @@ public abstract class Filter {
 
     /**
      * Against what mime types this filter applies.
+     * @return mimetypes
      */
     protected abstract Set<MimeType> constraintTypes();
 
     /**
      * Invoked for filtering each item.
      *
+     * @param context Context
+     * @param item item to filter
      * @return null if selectable, {@link IncapableCause} if not selectable.
      */
     public abstract IncapableCause filter(Context context, Item item);
 
     /**
      * Whether an {@link Item} need filtering.
+     * @param context Context
+     * @param item item to filter
+     * @return true if needs filtering, false otherwise
      */
     protected boolean needFiltering(Context context, Item item) {
         for (MimeType type : constraintTypes()) {

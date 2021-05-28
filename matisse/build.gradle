@@ -14,8 +14,25 @@
  * limitations under the License.
  */
 apply plugin: 'com.android.library'
-apply plugin: 'com.novoda.bintray-release'
+apply plugin: 'com.github.dcendents.android-maven'
+apply plugin: 'maven-publish'
 apply plugin: 'checkstyle'
+
+def gitHubUsername = "Bandyer"
+def gitHubProjectName = "Matisse"
+
+// initialize - do not modify this if your project is on github
+def siteUrl = "https://github.com/${gitHubUsername}/${gitHubProjectName}"
+def gitUrl = siteUrl + '.git'
+def projectName = "Matisse"
+// end - do not modify this if your project is on github
+
+def projectDesc = "A well-designed local image selector for Android"
+def projectGroup = "com.bandyer"
+def projectLicenses = ["Apache-2.0"]
+def projectLicenseUrl = "https://github.com/Bandyer/Bandyer-Android-Design/LICENSE.txt"
+def developerFullName = "Bandyer Srl"
+group = projectGroup
 
 android {
     compileSdkVersion 29
@@ -37,39 +54,118 @@ android {
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
 
-    implementation "androidx.appcompat:appcompat:1.1.0"
-    implementation "androidx.annotation:annotation:1.1.0"
-    implementation "androidx.recyclerview:recyclerview:1.0.0"
+    implementation "androidx.appcompat:appcompat:1.3.0"
+    implementation "androidx.annotation:annotation:1.2.0"
+    implementation "androidx.recyclerview:recyclerview:1.2.0"
     implementation 'it.sephiroth.android.library.imagezoom:library:1.0.4'
 
     compileOnly 'com.github.bumptech.glide:glide:4.7.1'
     compileOnly 'com.squareup.picasso:picasso:2.71828'
 }
 
-// jcenter configuration for novoda's bintray-release
-// $ ./gradlew clean build bintrayUpload -PbintrayUser=BINTRAY_USERNAME -PbintrayKey=BINTRAY_KEY -PdryRun=false
-publish {
-    userOrg = 'bandyer'
-    groupId = 'com.bandyer'
-    repoName = "General"
-    artifactId = 'matisse'
-    publishVersion = '0.0.1'
-    desc = 'A well-designed local image selector for Android'
-    website = 'https://www.zhihu.com/'
-    repository = 'https://github.com/Bandyer/Matisse'
+Properties properties = new Properties()
+if (project.rootProject.file("local.properties").exists()) {
+    properties.load(project.rootProject.file('local.properties').newDataInputStream())
+}
+
+install {
+    repositories.mavenInstaller {
+        pom.project {
+            name projectName
+            description projectDesc
+            packaging 'aar'
+            groupId projectGroup
+            version version
+            url siteUrl
+            licenses {
+                license {
+                    name projectLicenses[0]
+                    url projectLicenseUrl
+                }
+            }
+            developers {
+                developer {
+                    id gitHubUsername
+                    name developerFullName
+                }
+            }
+            scm {
+                connection gitUrl
+                developerConnection gitUrl
+                url siteUrl
+            }
+        }
+    }
+}
+
+afterEvaluate {
+    javadoc.classpath += files(android.libraryVariants.collect { variant ->
+        variant.javaCompileProvider.get().classpath.files
+    })
+    publishing {
+        repositories {
+            maven {
+                url = "s3://maven-bandyer/releases/"
+                credentials(AwsCredentials) {
+                    accessKey = properties.getProperty("maven.accessKey")
+                    secretKey = properties.getProperty("maven.secretKey")
+                }
+            }
+        }
+
+        publications {
+            release(MavenPublication) {
+                from components.release
+                groupId = projectGroup
+                artifactId = project.getName()
+                version = version
+                artifact javadocJar
+                artifact sourcesJar
+            }
+        }
+    }
+}
+
+task invalidateCache(type: Exec) {
+    workingDir '../scripts'
+    def publishPath = "releases"
+    def packageName = projectGroup + "." + project.getName()
+    commandLine 'python', './invalidate_s3_cache.py', properties.getProperty("maven.accessKey"), properties.getProperty("maven.secretKey"), properties.getProperty("maven.distributionId"), publishPath, packageName ,version
+}
+
+task publishUpload {
+    def dryRun = true
+    def publishTask = 'publishToMavenLocal'
+    if(!dryRun) publishTask = 'publish'
+    dependsOn publishTask
+    dependsOn 'invalidateCache'
+    tasks.findByName('invalidateCache').mustRunAfter publishTask
+}
+
+task sourcesJar(type: Jar) {
+    archiveClassifier.set("sources")
+    from android.sourceSets.main.java.srcDirs
 }
 
 task javadoc(type: Javadoc) {
-    options.encoding = "utf-8"
+    failOnError false
+    source = android.sourceSets.main.java.srcDirs
+    classpath += project.files(android.getBootClasspath().join(File.pathSeparator))
+}
+
+
+task javadocJar(type: Jar, dependsOn: javadoc) {
+    classifier = 'javadoc'
+    from javadoc.destinationDir
 }
 
 checkstyle {
     toolVersion = '7.6.1'
 }
 
-tasks.withType(Javadoc) {
-    options.addStringOption('Xdoclint:none', '-quiet')
-    options.addStringOption('encoding', 'UTF-8')
+artifacts {
+    archives javadocJar
+    archives sourcesJar
 }
 
 task checkstyle(type:Checkstyle) {

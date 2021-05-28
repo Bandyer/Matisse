@@ -23,6 +23,7 @@ public class PathUtils {
      * @param context The context.
      * @param uri     The Uri to query.
      * @author paulburke
+     * @return path
      */
     @TargetApi(Build.VERSION_CODES.KITKAT)
     public static String getPath(final Context context, final Uri uri) {

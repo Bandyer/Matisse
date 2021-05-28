@@ -65,6 +65,8 @@ public class Album implements Parcelable {
     /**
      * Constructs a new {@link Album} entity from the {@link Cursor}.
      * This method is not responsible for managing cursor resource, such as close, iterate, and so on.
+     * @param cursor Cursor
+     * @return album
      */
     public static Album valueOf(Cursor cursor) {
         String uri = cursor.getString(cursor.getColumnIndex(AlbumLoader.COLUMN_URI));

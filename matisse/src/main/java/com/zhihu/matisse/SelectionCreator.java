@@ -216,7 +216,7 @@ public final class SelectionCreator {
 
     /**
      * Determines Whether to hide top and bottom toolbar in PreView mode ,when user tap the picture
-     * @param enable
+     * @param enable true or false
      * @return {@link SelectionCreator} for fluent API.
      */
     public SelectionCreator autoHideToolbarOnSingleTap(boolean enable) {
