@@ -82,8 +82,8 @@ public class MatisseActivity extends AppCompatActivity implements
     private SelectedItemCollection mSelectedCollection = new SelectedItemCollection(this);
     private SelectionSpec mSpec;
 
-    private AlbumsSpinner mAlbumsSpinner;
-    private AlbumsAdapter mAlbumsAdapter;
+//    private AlbumsSpinner mAlbumsSpinner;
+//    private AlbumsAdapter mAlbumsAdapter;
     private TextView mButtonPreview;
     private TextView mButtonApply;
     private View mContainer;
@@ -144,12 +144,12 @@ public class MatisseActivity extends AppCompatActivity implements
         }
         updateBottomToolbar();
 
-        mAlbumsAdapter = new AlbumsAdapter(this, null, false);
-        mAlbumsSpinner = new AlbumsSpinner(this);
-        mAlbumsSpinner.setOnItemSelectedListener(this);
-        mAlbumsSpinner.setSelectedTextView((TextView) findViewById(R.id.selected_album));
-        mAlbumsSpinner.setPopupAnchorView(findViewById(R.id.toolbar));
-        mAlbumsSpinner.setAdapter(mAlbumsAdapter);
+//        mAlbumsAdapter = new AlbumsAdapter(this, null, false);
+//        mAlbumsSpinner = new AlbumsSpinner(this);
+//        mAlbumsSpinner.setOnItemSelectedListener(this);
+//        mAlbumsSpinner.setSelectedTextView((TextView) findViewById(R.id.selected_album));
+//        mAlbumsSpinner.setPopupAnchorView(findViewById(R.id.toolbar));
+//        mAlbumsSpinner.setAdapter(mAlbumsAdapter);
         mAlbumCollection.onCreate(this, this);
         mAlbumCollection.onRestoreInstanceState(savedInstanceState);
         mAlbumCollection.loadAlbums();
@@ -346,13 +346,13 @@ public class MatisseActivity extends AppCompatActivity implements
 
     @Override
     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-        mAlbumCollection.setStateCurrentSelection(position);
-        mAlbumsAdapter.getCursor().moveToPosition(position);
-        Album album = Album.valueOf(mAlbumsAdapter.getCursor());
-        if (album.isAll() && SelectionSpec.getInstance().capture) {
-            album.addCaptureCount();
-        }
-        onAlbumSelected(album);
+//        mAlbumCollection.setStateCurrentSelection(position);
+//        mAlbumsAdapter.getCursor().moveToPosition(position);
+//        Album album = Album.valueOf(mAlbumsAdapter.getCursor());
+//        if (album.isAll() && SelectionSpec.getInstance().capture) {
+//            album.addCaptureCount();
+//        }
+//        onAlbumSelected(album);
     }
 
     @Override
@@ -362,7 +362,7 @@ public class MatisseActivity extends AppCompatActivity implements
 
     @Override
     public void onAlbumLoad(final Cursor cursor) {
-        mAlbumsAdapter.swapCursor(cursor);
+//        mAlbumsAdapter.swapCursor(cursor);
         // select default album.
         Handler handler = new Handler(Looper.getMainLooper());
         handler.post(new Runnable() {
@@ -370,8 +370,8 @@ public class MatisseActivity extends AppCompatActivity implements
             @Override
             public void run() {
                 cursor.moveToPosition(mAlbumCollection.getCurrentSelection());
-                mAlbumsSpinner.setSelection(MatisseActivity.this,
-                        mAlbumCollection.getCurrentSelection());
+//                mAlbumsSpinner.setSelection(MatisseActivity.this,
+//                        mAlbumCollection.getCurrentSelection());
                 Album album = Album.valueOf(cursor);
                 if (album.isAll() && SelectionSpec.getInstance().capture) {
                     album.addCaptureCount();
@@ -383,7 +383,7 @@ public class MatisseActivity extends AppCompatActivity implements
 
     @Override
     public void onAlbumReset() {
-        mAlbumsAdapter.swapCursor(null);
+//        mAlbumsAdapter.swapCursor(null);
     }
 
     private void onAlbumSelected(Album album) {
